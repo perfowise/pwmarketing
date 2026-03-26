@@ -874,19 +874,22 @@ document.getElementById('audit-form').addEventListener('submit', function(e) {
         function(response) {
             console.log('SUCCESS!', response.status, response.text);
             messageEl.textContent = '✓ Análise solicitada com sucesso! Entraremos em contato em breve.';
-            messageEl.className = 'block bg-pw-brand/20 border border-pw-brand/50 text-pw-brand';
+            messageEl.classList.remove('hidden');
+            messageEl.classList.add('bg-pw-brand/20', 'border-pw-brand/50', 'text-pw-brand', 'border');
             document.getElementById('audit-form').reset();
             
             setTimeout(() => {
                 submitBtn.disabled = false;
                 submitBtn.innerHTML = 'Solicitar Análise Gratuita <i data-lucide="arrow-right" class="w-6 h-6"></i>';
+                messageEl.classList.add('hidden');
                 lucide.createIcons();
             }, 3000);
         },
         function(error) {
             console.log('FAILED...', error);
             messageEl.textContent = '✗ Erro ao enviar. Tente novamente.';
-            messageEl.className = 'block bg-red-500/20 border border-red-500/50 text-red-400';
+            messageEl.classList.remove('hidden');
+            messageEl.classList.add('bg-red-500/20', 'border-red-500/50', 'text-red-400', 'border');
             submitBtn.disabled = false;
             submitBtn.innerHTML = 'Solicitar Análise Gratuita <i data-lucide="arrow-right" class="w-6 h-6"></i>';
             lucide.createIcons();
