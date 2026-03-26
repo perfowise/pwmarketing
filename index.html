@@ -891,20 +891,7 @@ document.getElementById('audit-form').addEventListener('submit', function(e) {
             // Redireciona para página de obrigado após 2 segundos
             setTimeout(() => {
                 window.location.href = './obrigado.html';
-            }, 2000);
-        },
-        function(error) {
-            console.log('FAILED...', error);
-            messageEl.textContent = '✗ Erro ao enviar. Tente novamente.';
-            messageEl.classList.remove('hidden');
-            messageEl.classList.add('bg-red-500/20', 'border-red-500/50', 'text-red-400', 'border');
-            submitBtn.disabled = false;
-            submitBtn.innerHTML = 'Solicitar Análise Gratuita <i data-lucide="arrow-right" class="w-6 h-6"></i>';
-            lucide.createIcons();
-        }
-    );
-});
-</script>
+            }, 2
 
     <!-- Footer -->
     <footer class="bg-pw-elevated py-16 border-t border-pw-brand/10">
