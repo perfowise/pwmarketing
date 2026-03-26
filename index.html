@@ -887,24 +887,11 @@ document.getElementById('audit-form').addEventListener('submit', function(e) {
     emailjs.send(serviceID, templateID, templateParams).then(
         function(response) {
             console.log('SUCCESS!', response.status, response.text);
-            messageEl.textContent = '✓ Análise solicitada com sucesso! Entraremos em contato em breve.';
-            messageEl.classList.remove('hidden', 'bg-red-500/20', 'border-red-500/50', 'text-red-400');
-            messageEl.classList.add('block', 'bg-pw-brand/20', 'border', 'border-pw-brand/50', 'text-pw-brand');
-
-            // Limpa query string da URL para esconder parâmetros de pré-preenchimento
-            if (window.history && window.history.replaceState) {
-                const cleanUrl = window.location.origin + window.location.pathname + window.location.hash;
-                window.history.replaceState({}, document.title, cleanUrl);
-            }
-
-            document.getElementById('audit-form').reset();
             
+            // Redireciona para página de obrigado após 2 segundos
             setTimeout(() => {
-                submitBtn.disabled = false;
-                submitBtn.innerHTML = 'Solicitar Análise Gratuita <i data-lucide="arrow-right" class="w-6 h-6"></i>';
-                messageEl.classList.add('hidden');
-                lucide.createIcons();
-            }, 3000);
+                window.location.href = './obrigado.html';
+            }, 2000);
         },
         function(error) {
             console.log('FAILED...', error);
