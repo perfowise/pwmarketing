@@ -887,11 +887,36 @@ document.getElementById('audit-form').addEventListener('submit', function(e) {
     emailjs.send(serviceID, templateID, templateParams).then(
         function(response) {
             console.log('SUCCESS!', response.status, response.text);
-            
-            // Redireciona para página de obrigado após 2 segundos
+
+            messageEl.textContent = '✓ Análise solicitada com sucesso! Entraremos em contato em breve.';
+            messageEl.classList.remove('hidden', 'bg-red-500/20', 'border-red-500/50', 'text-red-400');
+            messageEl.classList.add('block', 'bg-pw-brand/20', 'border', 'border-pw-brand/50', 'text-pw-brand');
+
+            // Limpa query string da URL para esconder parâmetros de pré-preenchimento
+            if (window.history && window.history.replaceState) {
+                const cleanUrl = window.location.origin + window.location.pathname + window.location.hash;
+                window.history.replaceState({}, document.title, cleanUrl);
+            }
+
+            document.getElementById('audit-form').reset();
+
             setTimeout(() => {
+                // Redireciona para página de obrigado após 2 segundos
                 window.location.href = './obrigado.html';
-            }, 2
+            }, 2000);
+        },
+        function(error) {
+            console.log('FAILED...', error);
+            messageEl.textContent = '✗ Erro ao enviar. Tente novamente.';
+            messageEl.classList.remove('hidden', 'bg-pw-brand/20', 'border-pw-brand/50', 'text-pw-brand');
+            messageEl.classList.add('block', 'bg-red-500/20', 'border', 'border-red-500/50', 'text-red-400');
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = 'Solicitar Análise Gratuita <i data-lucide="arrow-right" class="w-6 h-6"></i>';
+            lucide.createIcons();
+        }
+    );
+});
+</script>
 
     <!-- Footer -->
     <footer class="bg-pw-elevated py-16 border-t border-pw-brand/10">
