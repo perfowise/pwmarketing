@@ -901,9 +901,11 @@ document.getElementById('audit-form').addEventListener('submit', function(e) {
             document.getElementById('audit-form').reset();
 
             setTimeout(() => {
-                // Redireciona para página de obrigado após 2 segundos
-                window.location.href = './obrigado.html';
-            }, 2000);
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = 'Solicitar Análise Gratuita <i data-lucide="arrow-right" class="w-6 h-6"></i>';
+                lucide.createIcons();
+                openFormModal('Obrigado! Recebemos sua solicitação e vamos te chamar em breve no WhatsApp.');
+            }, 1000);
         },
         function(error) {
             console.log('FAILED...', error);
@@ -985,9 +987,42 @@ document.getElementById('audit-form').addEventListener('submit', function(e) {
         </div>
     </div>
 
+    <!-- Modal de Confirmação de Envio -->
+    <div id="form-confirmation-modal" class="fixed inset-0 z-[100] bg-black/40 backdrop-blur-sm hidden opacity-0 transition-opacity duration-300 flex items-center justify-center p-4">
+        <div class="bg-pw-elevated border border-pw-brand/30 rounded-2xl p-6 max-w-sm w-full text-left relative shadow-[0_0_30px_rgba(0,232,93,0.5)]">
+            <button onclick="closeFormModal()" class="absolute top-3 right-3 text-pw-light hover:text-pw-brand transition-colors">
+                <i data-lucide="x" class="w-6 h-6"></i>
+            </button>
+            <h3 class="text-2xl font-bold text-pw-brand text-glow mb-3">Obrigado!</h3>
+            <p id="form-confirmation-text" class="text-pw-light/70 mb-6">Sua solicitação foi enviada com sucesso.</p>
+            <button onclick="closeFormModal()" class="w-full bg-pw-brand text-pw-dark font-bold uppercase py-3 rounded-xl hover:brightness-110 transition-all">Fechar</button>
+        </div>
+    </div>
+
     <!-- Scripts -->
     <script>
         lucide.createIcons();
+
+        function openFormModal(message) {
+            const modal = document.getElementById('form-confirmation-modal');
+            const text  = document.getElementById('form-confirmation-text');
+            text.textContent = message;
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+            }, 10);
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeFormModal() {
+            const modal = document.getElementById('form-confirmation-modal');
+            modal.classList.add('opacity-0');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                document.body.style.overflow = '';
+            }, 200);
+        }
+
 
         // Lógica do Modal de Vídeo
         function openVideoModal(url) {
