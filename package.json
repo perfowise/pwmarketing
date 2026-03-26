@@ -1,0 +1,27 @@
+{
+  "name": "pwmarketing",
+  "version": "1.0.0",
+  "description": "",
+  "keywords": [],
+  "homepage": "https://perfowise.github.io/pwmarketing",
+  "bugs": {
+    "url": "https://github.com/perfowise/pwmarketing/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/perfowise/pwmarketing.git"
+  },
+  "license": "ISC",
+  "author": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "npx live-server --port=8080 --host=0.0.0.0 .",
+    "predeploy": "echo \"Building static site...\"",
+    "deploy": "npx gh-pages -d ."
+  },
+  "devDependencies": {
+    "gh-pages": "^6.3.0",
+    "live-server": "^1.2.2"
+  }
+}
