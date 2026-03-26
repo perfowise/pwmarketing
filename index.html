@@ -874,8 +874,15 @@ document.getElementById('audit-form').addEventListener('submit', function(e) {
         function(response) {
             console.log('SUCCESS!', response.status, response.text);
             messageEl.textContent = '✓ Análise solicitada com sucesso! Entraremos em contato em breve.';
-            messageEl.classList.remove('hidden');
-            messageEl.classList.add('bg-pw-brand/20', 'border-pw-brand/50', 'text-pw-brand', 'border');
+            messageEl.classList.remove('hidden', 'bg-red-500/20', 'border-red-500/50', 'text-red-400');
+            messageEl.classList.add('block', 'bg-pw-brand/20', 'border', 'border-pw-brand/50', 'text-pw-brand');
+
+            // Limpa query string da URL para esconder parâmetros de pré-preenchimento
+            if (window.history && window.history.replaceState) {
+                const cleanUrl = window.location.origin + window.location.pathname + window.location.hash;
+                window.history.replaceState({}, document.title, cleanUrl);
+            }
+
             document.getElementById('audit-form').reset();
             
             setTimeout(() => {
