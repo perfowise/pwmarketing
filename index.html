@@ -750,85 +750,150 @@
         </div>
     </section>
 
-    <!-- Formulário Agressivo -->
-    <section id="auditoria" class="py-32 bg-pw-base relative border-t border-pw-brand/20">
-        <div class="glow-ambient left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 opacity-20"></div>
-        
-        <div class="max-w-7xl mx-auto px-6 relative z-10 reveal">
-            <div class="text-center mb-16">
-                <h2 class="text-4xl md:text-6xl font-bold uppercase tracking-tighter mb-4 text-pw-brand text-glow">Auditoria Estratégica</h2>
-                <p class="text-pw-light/70 font-semibold uppercase tracking-widest text-sm">Raio-x do seu processo de vendas.</p>
-            </div>
+  <!-- EMAILJS LIBRARY -->
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/index.min.js"></script>
 
-            <div class="bg-pw-elevated border border-pw-brand/20 rounded-2xl p-6 md:p-12 lg:p-16 relative overflow-hidden shadow-[0_0_50px_rgba(0,0,0,0.5)]">
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+<!-- FORMULÁRIO AGRESSIVO - EMAILJS INTEGRADO -->
+<section id="auditoria" class="py-32 bg-pw-base relative border-t border-pw-brand/20">
+    <div class="glow-ambient left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 opacity-20"></div>
+    
+    <div class="max-w-7xl mx-auto px-6 relative z-10 reveal">
+        <div class="text-center mb-16">
+            <h2 class="text-4xl md:text-6xl font-bold uppercase tracking-tighter mb-4 text-pw-brand text-glow">Auditoria Estratégica</h2>
+            <p class="text-pw-light/70 font-semibold uppercase tracking-widest text-sm">Raio-x do seu processo de vendas.</p>
+        </div>
+
+        <div class="bg-pw-elevated border border-pw-brand/20 rounded-2xl p-6 md:p-12 lg:p-16 relative overflow-hidden shadow-[0_0_50px_rgba(0,0,0,0.5)]">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+                
+                <!-- Coluna Esquerda: Vídeo Vimeo (Vertical) -->
+                <div class="w-full max-w-[320px] mx-auto relative rounded-2xl overflow-hidden border border-pw-brand/30 shadow-[0_0_30px_rgba(0,232,93,0.15)] bg-black aspect-[9/16] flex justify-center items-center">
+                    <span class="text-pw-light/30 text-xs font-semibold uppercase tracking-widest absolute z-0 animate-pulse">A carregar...</span>
                     
-                    <!-- Coluna Esquerda: Vídeo Vimeo (Vertical) -->
-                    <div class="w-full max-w-[320px] mx-auto relative rounded-2xl overflow-hidden border border-pw-brand/30 shadow-[0_0_30px_rgba(0,232,93,0.15)] bg-black aspect-[9/16] flex justify-center items-center">
-                        <span class="text-pw-light/30 text-xs font-semibold uppercase tracking-widest absolute z-0 animate-pulse">A carregar...</span>
+                    <iframe 
+                        src="https://player.vimeo.com/video/1174491850?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479&amp;autoplay=1&amp;muted=1&amp;loop=1" 
+                        frameborder="0" 
+                        allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share" 
+                        referrerpolicy="strict-origin-when-cross-origin" 
+                        title="Auditoria"
+                        class="absolute top-0 left-0 w-full h-full z-10">
+                    </iframe>
+                </div>
+
+                <!-- Coluna Direita: Formulário -->
+                <div class="w-full">
+                    <!-- FORMULÁRIO COM EMAILJS -->
+                    <form id="audit-form" class="space-y-6">
                         
-                        <iframe 
-                            src="https://player.vimeo.com/video/1174491850?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479&amp;autoplay=1&amp;muted=1&amp;loop=1" 
-                            frameborder="0" 
-                            allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share" 
-                            referrerpolicy="strict-origin-when-cross-origin" 
-                            title="Auditoria"
-                            class="absolute top-0 left-0 w-full h-full z-10">
-                        </iframe>
-                    </div>
-
-                    <!-- Coluna Direita: Formulário -->
-                    <div class="w-full">
-                        <form class="space-y-6" onsubmit="event.preventDefault(); alert('Dados enviados. Analisaremos seu perfil.');">
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div class="space-y-2 text-left">
-                                    <label class="text-xs font-semibold uppercase tracking-widest text-pw-light/50">Nome Completo</label>
-                                    <input type="text" required class="w-full bg-pw-base border border-pw-light/10 px-4 py-4 text-pw-light focus:outline-none focus:border-pw-brand focus:ring-1 focus:ring-pw-brand transition-all rounded-lg">
-                                </div>
-                                <div class="space-y-2 text-left">
-                                    <label class="text-xs font-semibold uppercase tracking-widest text-pw-light/50">WhatsApp</label>
-                                    <input type="tel" required class="w-full bg-pw-base border border-pw-light/10 px-4 py-4 text-pw-light focus:outline-none focus:border-pw-brand focus:ring-1 focus:ring-pw-brand transition-all rounded-lg">
-                                </div>
-                            </div>
-
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div class="space-y-2 text-left">
-                                    <label class="text-xs font-semibold uppercase tracking-widest text-pw-light/50">Sua Empresa</label>
-                                    <input type="text" required class="w-full bg-pw-base border border-pw-light/10 px-4 py-4 text-pw-light focus:outline-none focus:border-pw-brand focus:ring-1 focus:ring-pw-brand transition-all rounded-lg">
-                                </div>
-                                <div class="space-y-2 text-left">
-                                    <label class="text-xs font-semibold uppercase tracking-widest text-pw-light/50">Segmento</label>
-                                    <input type="text" required class="w-full bg-pw-base border border-pw-light/10 px-4 py-4 text-pw-light focus:outline-none focus:border-pw-brand focus:ring-1 focus:ring-pw-brand transition-all rounded-lg">
-                                </div>
-                            </div>
-
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div class="space-y-2 text-left">
-                                <label class="text-xs font-semibold uppercase tracking-widest text-pw-light/50">Faturamento Mensal</label>
-                                <select required class="w-full bg-pw-base border border-pw-light/10 px-4 py-4 text-pw-light focus:outline-none focus:border-pw-brand focus:ring-1 focus:ring-pw-brand transition-all appearance-none rounded-lg">
-                                    <option value="" disabled selected>Selecione seu momento atual</option>
-                                    <option value="ate-10k">Até R$ 10.000</option>
-                                    <option value="10k-30k">R$ 10.000 a R$ 30.000</option>
-                                    <option value="30k-50k">R$ 30.000 a R$ 50.000</option>
-                                    <option value="50k-100k">R$ 50.000 a R$ 100.000</option>
-                                    <option value="100k-300k">R$ 100.000 a R$ 300.000</option>
-                                    <option value="300k-500k">R$ 300.000 a R$ 500.000</option>
-                                    <option value="500k-1m">R$ 500.000 a R$ 1 Milhão</option>
-                                    <option value="mais-1m">Mais de R$ 1 Milhão</option>
-                                </select>
+                                <label for="nome_completo" class="text-xs font-semibold uppercase tracking-widest text-pw-light/50">Nome Completo</label>
+                                <input type="text" id="nome_completo" name="nome_completo" required class="w-full bg-pw-base border border-pw-light/10 px-4 py-4 text-pw-light focus:outline-none focus:border-pw-brand focus:ring-1 focus:ring-pw-brand transition-all rounded-lg">
                             </div>
+                            <div class="space-y-2 text-left">
+                                <label for="whatsapp" class="text-xs font-semibold uppercase tracking-widest text-pw-light/50">WhatsApp</label>
+                                <input type="tel" id="whatsapp" name="whatsapp" placeholder="(XX) XXXXX-XXXX" required class="w-full bg-pw-base border border-pw-light/10 px-4 py-4 text-pw-light focus:outline-none focus:border-pw-brand focus:ring-1 focus:ring-pw-brand transition-all rounded-lg">
+                            </div>
+                        </div>
 
-                            <div class="pt-8">
-                                <button type="submit" class="w-full btn-agressivo bg-pw-brand text-pw-dark font-bold text-xl uppercase tracking-widest py-5 rounded-xl flex justify-center items-center gap-3 transition-colors">
-                                    Solicitar Análise Gratuita
-                                    <i data-lucide="arrow-right" class="w-6 h-6"></i>
-                                </button>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="space-y-2 text-left">
+                                <label for="empresa" class="text-xs font-semibold uppercase tracking-widest text-pw-light/50">Sua Empresa</label>
+                                <input type="text" id="empresa" name="empresa" required class="w-full bg-pw-base border border-pw-light/10 px-4 py-4 text-pw-light focus:outline-none focus:border-pw-brand focus:ring-1 focus:ring-pw-brand transition-all rounded-lg">
                             </div>
-                        </form>
-                    </div>
+                            <div class="space-y-2 text-left">
+                                <label for="segmento" class="text-xs font-semibold uppercase tracking-widest text-pw-light/50">Segmento</label>
+                                <input type="text" id="segmento" name="segmento" required class="w-full bg-pw-base border border-pw-light/10 px-4 py-4 text-pw-light focus:outline-none focus:border-pw-brand focus:ring-1 focus:ring-pw-brand transition-all rounded-lg">
+                            </div>
+                        </div>
+
+                        <div class="space-y-2 text-left">
+                            <label for="faturamento" class="text-xs font-semibold uppercase tracking-widest text-pw-light/50">Faturamento Mensal</label>
+                            <select id="faturamento" name="faturamento" required class="w-full bg-pw-base border border-pw-light/10 px-4 py-4 text-pw-light focus:outline-none focus:border-pw-brand focus:ring-1 focus:ring-pw-brand transition-all appearance-none rounded-lg">
+                                <option value="" disabled selected>Selecione seu momento atual</option>
+                                <option value="Até R$ 10.000">Até R$ 10.000</option>
+                                <option value="R$ 10.000 a R$ 30.000">R$ 10.000 a R$ 30.000</option>
+                                <option value="R$ 30.000 a R$ 50.000">R$ 30.000 a R$ 50.000</option>
+                                <option value="R$ 50.000 a R$ 100.000">R$ 50.000 a R$ 100.000</option>
+                                <option value="R$ 100.000 a R$ 300.000">R$ 100.000 a R$ 300.000</option>
+                                <option value="R$ 300.000 a R$ 500.000">R$ 300.000 a R$ 500.000</option>
+                                <option value="R$ 500.000 a R$ 1 Milhão">R$ 500.000 a R$ 1 Milhão</option>
+                                <option value="Mais de R$ 1 Milhão">Mais de R$ 1 Milhão</option>
+                            </select>
+                        </div>
+
+                        <!-- Mensagem de feedback -->
+                        <div id="form-message" class="hidden rounded-lg p-4 text-sm font-semibold"></div>
+
+                        <div class="pt-8">
+                            <button type="submit" id="submit-btn" class="w-full btn-agressivo bg-pw-brand text-pw-dark font-bold text-xl uppercase tracking-widest py-5 rounded-xl flex justify-center items-center gap-3 transition-colors hover:brightness-110">
+                                Solicitar Análise Gratuita
+                                <i data-lucide="arrow-right" class="w-6 h-6"></i>
+                            </button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
-    </section>
+    </div>
+</section>
+
+<!-- SCRIPT EMAILJS -->
+<script type="text/javascript">
+    const SERVICE_ID = 'service_wrnh7j6';
+    const TEMPLATE_ID = 'pw_audit_form';
+    const PUBLIC_KEY = '-8b4nqo9BvrINkl6e';
+
+    emailjs.init(PUBLIC_KEY);
+
+    document.getElementById('audit-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const submitBtn = document.getElementById('submit-btn');
+        const messageEl = document.getElementById('form-message');
+
+        const formData = {
+            nome_completo: document.getElementById('nome_completo').value.trim(),
+            whatsapp: document.getElementById('whatsapp').value.trim(),
+            whatsapp_numbers: document.getElementById('whatsapp').value.trim().replace(/\D/g, ''),
+            empresa: document.getElementById('empresa').value.trim(),
+            segmento: document.getElementById('segmento').value.trim(),
+            faturamento: document.getElementById('faturamento').value.trim(),
+            email_to: 'perfowise@gmail.com',
+        };
+
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = 'Enviando... <i data-lucide="loader" class="w-6 h-6 animate-spin"></i>';
+        lucide.createIcons();
+
+        try {
+            const response = await emailjs.send(SERVICE_ID, TEMPLATE_ID, formData);
+
+            if (response.status === 200) {
+                messageEl.textContent = '✓ Análise solicitada com sucesso! Entraremos em contato em breve.';
+                messageEl.className = 'block bg-pw-brand/20 border border-pw-brand/50 text-pw-brand';
+                document.getElementById('audit-form').reset();
+                
+                setTimeout(() => {
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = 'Solicitar Análise Gratuita <i data-lucide="arrow-right" class="w-6 h-6"></i>';
+                    lucide.createIcons();
+                }, 3000);
+            } else {
+                throw new Error('Erro ao enviar email');
+            }
+
+        } catch (error) {
+            console.error('Error:', error);
+            messageEl.textContent = '✗ Erro ao enviar. Tente novamente ou contate via WhatsApp.';
+            messageEl.className = 'block bg-red-500/20 border border-red-500/50 text-red-400';
+            
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = 'Solicitar Análise Gratuita <i data-lucide="arrow-right" class="w-6 h-6"></i>';
+            lucide.createIcons();
+        }
+    });
+</script>
 
     <!-- Footer -->
     <footer class="bg-pw-elevated py-16 border-t border-pw-brand/10">
