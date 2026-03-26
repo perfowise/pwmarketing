@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+a<!DOCTYPE html>
 <html lang="pt-BR" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
@@ -779,7 +779,7 @@
 
                 <!-- Coluna Direita: Formulário -->
                 <div class="w-full">
-                    <form id="audit-form" class="space-y-6" method="POST" action="#" onsubmit="return false;">
+                    <form id="audit-form" class="space-y-6" method="POST" action="#">
                         
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div class="space-y-2 text-left">
@@ -842,6 +842,20 @@
 
 document.getElementById('audit-form').addEventListener('submit', function(e) {
     e.preventDefault();
+
+    const form = e.target;
+    if (!form.checkValidity()) {
+        form.reportValidity();
+        return;
+    }
+
+    if (!window.emailjs || !window.emailjs.send) {
+        const messageEl = document.getElementById('form-message');
+        messageEl.textContent = '✗ Não foi possível enviar no momento. Libere scripts de terceiros (EmailJS) e tente novamente.';
+        messageEl.classList.remove('hidden', 'bg-pw-brand/20', 'border-pw-brand/50', 'text-pw-brand');
+        messageEl.classList.add('block', 'bg-red-500/20', 'border', 'border-red-500/50', 'text-red-400');
+        return;
+    }
 
     const serviceID = 'service_wrnh7j6';
     const templateID = 'pw_audit_form';
