@@ -750,10 +750,7 @@
         </div>
     </section>
 
-  <!-- EMAILJS LIBRARY -->
-<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/index.min.js"></script>
-
-<!-- FORMULÁRIO AGRESSIVO - EMAILJS INTEGRADO -->
+<!-- FORMULÁRIO AGRESSIVO - EMAILJS INTEGRADO (VERSÃO CORRIGIDA) -->
 <section id="auditoria" class="py-32 bg-pw-base relative border-t border-pw-brand/20">
     <div class="glow-ambient left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 opacity-20"></div>
     
@@ -782,7 +779,6 @@
 
                 <!-- Coluna Direita: Formulário -->
                 <div class="w-full">
-                    <!-- FORMULÁRIO COM EMAILJS -->
                     <form id="audit-form" class="space-y-6">
                         
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -822,7 +818,6 @@
                             </select>
                         </div>
 
-                        <!-- Mensagem de feedback -->
                         <div id="form-message" class="hidden rounded-lg p-4 text-sm font-semibold"></div>
 
                         <div class="pt-8">
@@ -838,61 +833,66 @@
     </div>
 </section>
 
-<!-- SCRIPT EMAILJS -->
+<!-- SCRIPT EMAILJS - Cole logo ANTES de </body> -->
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/index.min.js"></script>
 <script type="text/javascript">
-    const SERVICE_ID = 'service_wrnh7j6';
-    const TEMPLATE_ID = 'pw_audit_form';
-    const PUBLIC_KEY = '-8b4nqo9BvrINkl6e';
+(function() {
+    emailjs.init('-8b4nqo9BvrINkl6e');
+})();
 
-    emailjs.init(PUBLIC_KEY);
+document.getElementById('audit-form').addEventListener('submit', function(e) {
+    e.preventDefault();
 
-    document.getElementById('audit-form').addEventListener('submit', async (e) => {
-        e.preventDefault();
+    const serviceID = 'service_wrnh7j6';
+    const templateID = 'pw_audit_form';
+    
+    const nome_completo = document.getElementById('nome_completo').value;
+    const whatsapp = document.getElementById('whatsapp').value;
+    const empresa = document.getElementById('empresa').value;
+    const segmento = document.getElementById('segmento').value;
+    const faturamento = document.getElementById('faturamento').value;
+    const whatsapp_numbers = whatsapp.replace(/\D/g, '');
 
-        const submitBtn = document.getElementById('submit-btn');
-        const messageEl = document.getElementById('form-message');
+    const templateParams = {
+        to_email: 'perfowise@gmail.com',
+        nome_completo: nome_completo,
+        whatsapp: whatsapp,
+        whatsapp_numbers: whatsapp_numbers,
+        empresa: empresa,
+        segmento: segmento,
+        faturamento: faturamento,
+        email_to: 'perfowise@gmail.com'
+    };
 
-        const formData = {
-            nome_completo: document.getElementById('nome_completo').value.trim(),
-            whatsapp: document.getElementById('whatsapp').value.trim(),
-            whatsapp_numbers: document.getElementById('whatsapp').value.trim().replace(/\D/g, ''),
-            empresa: document.getElementById('empresa').value.trim(),
-            segmento: document.getElementById('segmento').value.trim(),
-            faturamento: document.getElementById('faturamento').value.trim(),
-            email_to: 'perfowise@gmail.com',
-        };
+    const submitBtn = document.getElementById('submit-btn');
+    const messageEl = document.getElementById('form-message');
 
-        submitBtn.disabled = true;
-        submitBtn.innerHTML = 'Enviando... <i data-lucide="loader" class="w-6 h-6 animate-spin"></i>';
-        lucide.createIcons();
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = 'Enviando...';
 
-        try {
-            const response = await emailjs.send(SERVICE_ID, TEMPLATE_ID, formData);
-
-            if (response.status === 200) {
-                messageEl.textContent = '✓ Análise solicitada com sucesso! Entraremos em contato em breve.';
-                messageEl.className = 'block bg-pw-brand/20 border border-pw-brand/50 text-pw-brand';
-                document.getElementById('audit-form').reset();
-                
-                setTimeout(() => {
-                    submitBtn.disabled = false;
-                    submitBtn.innerHTML = 'Solicitar Análise Gratuita <i data-lucide="arrow-right" class="w-6 h-6"></i>';
-                    lucide.createIcons();
-                }, 3000);
-            } else {
-                throw new Error('Erro ao enviar email');
-            }
-
-        } catch (error) {
-            console.error('Error:', error);
-            messageEl.textContent = '✗ Erro ao enviar. Tente novamente ou contate via WhatsApp.';
-            messageEl.className = 'block bg-red-500/20 border border-red-500/50 text-red-400';
+    emailjs.send(serviceID, templateID, templateParams).then(
+        function(response) {
+            console.log('SUCCESS!', response.status, response.text);
+            messageEl.textContent = '✓ Análise solicitada com sucesso! Entraremos em contato em breve.';
+            messageEl.className = 'block bg-pw-brand/20 border border-pw-brand/50 text-pw-brand';
+            document.getElementById('audit-form').reset();
             
+            setTimeout(() => {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = 'Solicitar Análise Gratuita <i data-lucide="arrow-right" class="w-6 h-6"></i>';
+                lucide.createIcons();
+            }, 3000);
+        },
+        function(error) {
+            console.log('FAILED...', error);
+            messageEl.textContent = '✗ Erro ao enviar. Tente novamente.';
+            messageEl.className = 'block bg-red-500/20 border border-red-500/50 text-red-400';
             submitBtn.disabled = false;
             submitBtn.innerHTML = 'Solicitar Análise Gratuita <i data-lucide="arrow-right" class="w-6 h-6"></i>';
             lucide.createIcons();
         }
-    });
+    );
+});
 </script>
 
     <!-- Footer -->
