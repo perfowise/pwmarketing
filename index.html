@@ -1,0 +1,982 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PerfoWise | Assessoria de Performance</title>
+    
+    <!-- Fonts: Montserrat para impacto agressivo e imponente -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        pw: {
+                            base: '#0A1310',      // Preto absoluto (intercalado ajustado)
+                            dark: '#0D1815',      // Fundo principal solicitado
+                            elevated: '#142520',  // Cards e elevações
+                            brand: '#00E85D',     // Verde Altamente Saturado / Neon
+                            light: '#F1F2D5',     // Textos gerais
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Montserrat', 'sans-serif'],
+                    },
+                    backgroundImage: {
+                        'noise': "url('data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.65%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22/%3E%3C/svg%3E')",
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        /* Custom Styles & Animations */
+        body {
+            background-color: #0D1815;
+            color: #F1F2D5;
+            overflow-x: hidden;
+        }
+
+        /* Ambientação e Texturas */
+        .texture-overlay {
+            position: absolute;
+            inset: 0;
+            background-image: radial-gradient(rgba(0, 232, 93, 0.05) 1px, transparent 1px);
+            background-size: 30px 30px;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .glow-ambient {
+            position: absolute;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(0, 232, 93, 0.08) 0%, rgba(13, 24, 21, 0) 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* Scroll Animations */
+        .reveal {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .delay-100 { transition-delay: 100ms; }
+        .delay-200 { transition-delay: 200ms; }
+
+        /* Botão Agressivo */
+        .btn-agressivo {
+            position: relative;
+            box-shadow: 0 4px 20px rgba(0, 232, 93, 0.3);
+            transition: all 0.3s ease;
+        }
+        .btn-agressivo:hover {
+            box-shadow: 0 6px 35px rgba(0, 232, 93, 0.5);
+            transform: translateY(-2px);
+            filter: brightness(1.1);
+        }
+
+        /* Cards Soluções - Novo Design Robusto */
+        .card-pesado {
+            background: linear-gradient(145deg, #142520 0%, #0A1310 100%);
+            border: 1px solid rgba(0, 232, 93, 0.1);
+            border-top: 3px solid rgba(0, 232, 93, 0.8);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .card-pesado:hover {
+            border-color: rgba(0, 232, 93, 0.4);
+            box-shadow: 0 10px 40px rgba(0, 232, 93, 0.15), inset 0 0 20px rgba(0, 232, 93, 0.05);
+            transform: translateY(-8px);
+        }
+
+        /* Texto com Glow Vibrante */
+        .text-glow {
+            text-shadow: 0 0 25px rgba(0, 232, 93, 0.5);
+        }
+
+        /* Map Pins */
+        .pin {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            background-color: #00E85D;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 0 20px #00E85D;
+            cursor: pointer;
+            z-index: 20;
+        }
+        .pin::after {
+            content: '';
+            position: absolute;
+            inset: -12px;
+            border: 2px solid rgba(0, 232, 93, 0.6);
+            border-radius: 50%;
+            animation: pulse-radar 2s infinite linear;
+        }
+        @keyframes pulse-radar {
+            0% { transform: scale(0.5); opacity: 1; }
+            100% { transform: scale(2.5); opacity: 0; }
+        }
+        .pin-label {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #0D1815;
+            border: 1px solid #00E85D;
+            color: #FFFFFF;
+            padding: 6px 12px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+            white-space: nowrap;
+            z-index: 30;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            border-radius: 4px;
+        }
+        .pin:hover .pin-label { opacity: 1; }
+
+        /* Marquee - Clientes */
+        .marquee-container {
+            overflow: hidden;
+            white-space: nowrap;
+            width: 100%;
+            position: relative;
+        }
+        .marquee-container::before, .marquee-container::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            width: 150px;
+            height: 100%;
+            z-index: 2;
+        }
+        .marquee-container::before {
+            left: 0;
+            background: linear-gradient(to right, #0A1310, transparent);
+        }
+        .marquee-container::after {
+            right: 0;
+            background: linear-gradient(to left, #0A1310, transparent);
+        }
+        .marquee-content {
+            display: inline-block;
+            animation: marquee 20s linear infinite;
+        }
+        @keyframes marquee {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        /* --- ORBIT / RADAR CSS --- */
+        .orbit-wrapper {
+            position: relative;
+            width: 320px;
+            height: 320px;
+            margin: 0 auto;
+        }
+        @media (min-width: 768px) {
+            .orbit-wrapper { width: 500px; height: 500px; }
+        }
+        
+        .orbit-container {
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            border: 2px dashed rgba(0, 232, 93, 0.4);
+            animation: spin 30s linear infinite;
+            box-shadow: inset 0 0 50px rgba(0, 232, 93, 0.05);
+        }
+        
+        .radar-sweep {
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            background: conic-gradient(from 0deg, rgba(0, 232, 93, 0.3) 0deg, rgba(0, 232, 93, 0) 60deg);
+            animation: sweep 4s linear infinite;
+            pointer-events: none;
+            z-index: 5;
+        }
+
+        .orbit-center {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 20;
+        }
+
+        .orbit-item {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            margin-top: -40px;
+            margin-left: -40px;
+            width: 80px;
+            height: 80px;
+            z-index: 10;
+        }
+        @media (min-width: 768px) {
+            .orbit-item { 
+                width: 96px; 
+                height: 96px;
+                margin-top: -48px; 
+                margin-left: -48px; 
+            }
+        }
+
+        .orbit-item-inner {
+            display: flex;
+            width: 100%;
+            height: 100%;
+            justify-content: center;
+        }
+
+        .item-1 { transform: rotate(0deg) translateX(160px); }
+        .item-2 { transform: rotate(90deg) translateX(160px); }
+        .item-3 { transform: rotate(180deg) translateX(160px); }
+        .item-4 { transform: rotate(270deg) translateX(160px); }
+        
+        .item-1 .orbit-item-inner { animation: counter-spin-1 30s linear infinite; }
+        .item-2 .orbit-item-inner { animation: counter-spin-2 30s linear infinite; }
+        .item-3 .orbit-item-inner { animation: counter-spin-3 30s linear infinite; }
+        .item-4 .orbit-item-inner { animation: counter-spin-4 30s linear infinite; }
+
+        @media (min-width: 768px) {
+            .item-1 { transform: rotate(0deg) translateX(250px); }
+            .item-2 { transform: rotate(90deg) translateX(250px); }
+            .item-3 { transform: rotate(180deg) translateX(250px); }
+            .item-4 { transform: rotate(270deg) translateX(250px); }
+        }
+
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+        @keyframes counter-spin-1 { 0% { transform: rotate(0deg); } 100% { transform: rotate(-360deg); } }
+        @keyframes counter-spin-2 { 0% { transform: rotate(-90deg); } 100% { transform: rotate(-450deg); } }
+        @keyframes counter-spin-3 { 0% { transform: rotate(-180deg); } 100% { transform: rotate(-540deg); } }
+        @keyframes counter-spin-4 { 0% { transform: rotate(-270deg); } 100% { transform: rotate(-630deg); } }
+        @keyframes sweep { 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body class="antialiased selection:bg-pw-brand selection:text-pw-dark">
+
+    <!-- Navegação Sóbria -->
+    <nav class="fixed w-full z-50 bg-pw-dark/90 backdrop-blur-md border-b border-pw-brand/10 transition-all duration-300" id="navbar">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+            <!-- Logo Estruturado -->
+            <div class="flex items-center gap-3">
+                <img src="https://i.postimg.cc/GBHz27hJ/logo.png" alt="PerfoWise Logo" class="h-16 md:h-20 w-auto">
+            </div>
+            
+            <div class="hidden md:flex items-center gap-8 text-sm font-semibold tracking-widest uppercase">
+                <a href="#solucoes" class="text-pw-light/60 hover:text-pw-brand transition-colors">Soluções</a>
+                <a href="#processo" class="text-pw-light/60 hover:text-pw-brand transition-colors">Processo</a>
+                <a href="#auditoria" class="bg-pw-brand text-pw-dark px-6 py-2.5 rounded-lg font-bold hover:brightness-110 transition-all">Auditoria Gratuita</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="relative min-h-screen flex items-center justify-center pt-20 overflow-hidden bg-pw-dark">
+        
+        <!-- Fundo Animado (Vimeo) -->
+        <div class="absolute inset-0 z-0 overflow-hidden pointer-events-none flex items-center justify-center">
+            <!-- Container redimensionado para agir como "cover" (Opacidade aumentada para 60%) -->
+            <div class="w-[200vw] md:w-[150vw] lg:w-[120vw] opacity-60 blur-[6px] transform scale-125">
+                <div style="padding:75% 0 0 0;position:relative;">
+                    <iframe src="https://player.vimeo.com/video/1174501690?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479&amp;autoplay=1&amp;muted=1&amp;loop=1&amp;background=1" frameborder="0" allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share" referrerpolicy="strict-origin-when-cross-origin" style="position:absolute;top:0;left:0;width:100%;height:100%;" title="tec"></iframe>
+                </div>
+            </div>
+            
+            <!-- Tintura verde para encaixar na paleta e degradê para legibilidade -->
+            <div class="absolute inset-0 bg-[#00E85D] mix-blend-overlay opacity-10"></div>
+            <div class="absolute inset-0 bg-gradient-to-b from-pw-dark/80 via-pw-dark/60 to-pw-dark/100"></div>
+        </div>
+        <script src="https://player.vimeo.com/api/player.js"></script>
+
+        <div class="texture-overlay z-10"></div>
+        <div class="glow-ambient top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10"></div>
+
+        <div class="relative z-20 max-w-5xl mx-auto px-6 text-center">
+            <div class="reveal">
+                <span class="uppercase tracking-[0.4em] text-xs md:text-sm text-pw-brand font-semibold mb-6 block border border-pw-brand/30 inline-block px-4 py-1 rounded-sm bg-pw-brand/5 backdrop-blur-sm">
+                    Assessoria de Marketing de Performance
+                </span>
+            </div>
+            
+            <h1 class="text-4xl md:text-6xl lg:text-[4.5rem] font-black leading-[1.05] tracking-tighter mb-8 reveal delay-100 uppercase text-white">
+                Marketing que transforma <br class="hidden md:block"/>
+                <span class="text-pw-brand text-glow">atenção em faturamento.</span>
+            </h1>
+            
+            <p class="text-lg md:text-2xl font-medium text-pw-light max-w-3xl mx-auto mb-12 reveal delay-200">
+                Estratégias de crescimento orientadas por dados,<br class="hidden md:block"/> performance de alto nível e alta conversão.
+            </p>
+            
+            <div class="flex flex-col items-center justify-center reveal delay-200 mt-8 w-full">
+                <!-- Slogan Destacado numa linha com borda orbital animada -->
+                <div class="relative inline-flex overflow-hidden rounded-2xl p-[2px] shadow-[0_0_30px_rgba(0,232,93,0.15)] max-w-full">
+                    <!-- Luz orbital (Conic gradient giratório com dois pontos de luz) -->
+                    <span class="absolute inset-[-1000%] animate-[spin_4s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,#00E85D_0%,transparent_15%,transparent_50%,#00E85D_50%,transparent_65%,transparent_100%)]"></span>
+                    
+                    <!-- Fundo interno (esconde o centro do gradiente, deixando só a borda a brilhar) -->
+                    <div class="relative inline-flex items-center justify-center gap-2 sm:gap-4 md:gap-6 px-4 sm:px-6 md:px-8 py-4 md:py-6 rounded-[14px] bg-[#0A1310] w-full">
+                        <span class="text-[0.6rem] min-[380px]:text-xs sm:text-sm md:text-xl lg:text-2xl font-black tracking-[0.05em] sm:tracking-[0.1em] md:tracking-[0.2em] uppercase text-pw-light whitespace-nowrap">
+                            PW é <span class="text-pw-brand text-glow">performance</span>
+                        </span>
+                        <div class="w-1 h-1 md:w-2 md:h-2 bg-pw-brand rounded-full shadow-[0_0_10px_rgba(0,232,93,0.8)] shrink-0"></div>
+                        <span class="text-[0.6rem] min-[380px]:text-xs sm:text-sm md:text-xl lg:text-2xl font-black tracking-[0.05em] sm:tracking-[0.1em] md:tracking-[0.2em] uppercase text-pw-light whitespace-nowrap">
+                            Performance é <span class="text-pw-brand text-glow">venda</span>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Social Proof Section -->
+    <section class="py-12 border-t border-pw-brand/10 bg-pw-base relative overflow-hidden" id="proof-section">
+        <div class="max-w-7xl mx-auto px-6 relative z-10 flex flex-col md:flex-row items-center justify-center gap-6 md:gap-12">
+            <p class="text-sm md:text-lg font-semibold uppercase tracking-widest text-pw-light/50">Resultados Gerados</p>
+            <div class="flex items-end gap-2 text-pw-brand text-glow">
+                <span class="text-3xl md:text-4xl font-bold pb-1">R$</span>
+                <span id="revenue-counter" class="text-6xl md:text-7xl font-bold tracking-tighter leading-none">0</span>
+                <span class="text-4xl md:text-5xl font-bold">+</span>
+            </div>
+            <p class="text-sm md:text-lg font-semibold uppercase tracking-widest text-pw-light/50 text-center md:text-left">em faturamento <br class="hidden md:block"/>para clientes.</p>
+        </div>
+    </section>
+
+    <!-- Clientes PW (Marquee) -->
+    <section class="py-12 bg-pw-base border-b border-pw-brand/10 overflow-hidden">
+        <div class="text-center mb-10">
+            <p class="text-xs font-bold tracking-[0.3em] uppercase text-pw-light/30">Quem confia na PW</p>
+        </div>
+        <div class="marquee-container">
+            <div class="marquee-content flex items-center gap-16 px-8">
+                <!-- Grupo 1: Todos os 13 Logos Únicos -->
+                <img src="https://i.postimg.cc/w3mxCLLq/logo.png" alt="Cliente PW" class="h-10 md:h-12 w-auto grayscale opacity-50 hover:grayscale-0 hover:opacity-100 transition-all duration-300">
+                <img src="https://i.postimg.cc/gxNGVDFw/logo.png" alt="Cliente PW" class="h-6 md:h-8 w-auto grayscale opacity-50 hover:grayscale-0 hover:opacity-100 transition-all duration-300">
+                <img src="https://i.postimg.cc/KKPrpRfJ/logo.png" alt="Cliente PW" class="h-10 md:h-12 w-auto grayscale opacity-50 hover:grayscale-0 hover:opacity-100 transition-all duration-300">
+                <img src="https://i.postimg.cc/mzhkznPY/logo.png" alt="Cliente PW" class="h-10 md:h-12 w-auto grayscale opacity-50 hover:grayscale-0 hover:opacity-100 transition-all duration-300">
+                <img src="https://i.postimg.cc/H8crKNHJ/logo.png" alt="Cliente PW" class="h-10 md:h-12 w-auto grayscale opacity-50 hover:grayscale-0 hover:opacity-100 transition-all duration-300">
+                <img src="https://i.postimg.cc/30vw9DCg/logo.png" alt="Cliente PW" class="h-10 md:h-12 w-auto grayscale opacity-50 hover:grayscale-0 hover:opacity-100 transition-all duration-300">
+                <img src="https://i.postimg.cc/9DjD81nK/logo.png" alt="Cliente PW" class="h-10 md:h-12 w-auto grayscale opacity-50 hover:grayscale-0 hover:opacity-100 transition-all duration-300">
+                <img src="https://i.postimg.cc/PC456HZy/logo.png" alt="Cliente PW" class="h-6 md:h-8 w-auto grayscale opacity-50 hover:grayscale-0 hover:opacity-100 transition-all duration-300">
+                <img src="https://i.postimg.cc/crtTc8By/logo.png" alt="Cliente PW" class="h-10 md:h-12 w-auto grayscale opacity-50 hover:grayscale-0 hover:opacity-100 transition-all duration-300">
+                
+                <!-- Os 4 Novos Logos (Links Diretos Corrigidos) -->
+                <img src="https://i.postimg.cc/QxyNpb3T/1773774291435_Logo_Best_Academia.png" alt="Best Academia" class="h-10 md:h-12 w-auto grayscale opacity-50 hover:grayscale-0 hover:opacity-100 transition-all duration-300">
+                <img src="https://i.postimg.cc/sDNfpcr1/1773775888469_Design_sem_nome_1.png" alt="Cliente PW" class="h-10 md:h-12 w-auto grayscale opacity-50 hover:grayscale-0 hover:opacity-100 transition-all duration-300">
+                <img src="https://i.postimg.cc/VL6Lrh3X/1773776043716_Logo_Citrine.png" alt="Citrine" class="h-10 md:h-12 w-auto grayscale opacity-50 hover:grayscale-0 hover:opacity-100 transition-all duration-300">
+                <img src="https://i.postimg.cc/1XTxNvq3/edsvcwd.png" alt="Cliente PW" class="h-10 md:h-12 w-auto grayscale opacity-50 hover:grayscale-0 hover:opacity-100 transition-all duration-300">
+                
+                <!-- Grupo 2: Cópia exata para o efeito de Loop Infinito não quebrar -->
+                <img src="https://i.postimg.cc/w3mxCLLq/logo.png" alt="Cliente PW" class="h-10 md:h-12 w-auto grayscale opacity-50 hover:grayscale-0 hover:opacity-100 transition-all duration-300">
+                <img src="https://i.postimg.cc/gxNGVDFw/logo.png" alt="Cliente PW" class="h-6 md:h-8 w-auto grayscale opacity-50 hover:grayscale-0 hover:opacity-100 transition-all duration-300">
+                <img src="https://i.postimg.cc/KKPrpRfJ/logo.png" alt="Cliente PW" class="h-10 md:h-12 w-auto grayscale opacity-50 hover:grayscale-0 hover:opacity-100 transition-all duration-300">
+                <img src="https://i.postimg.cc/mzhkznPY/logo.png" alt="Cliente PW" class="h-10 md:h-12 w-auto grayscale opacity-50 hover:grayscale-0 hover:opacity-100 transition-all duration-300">
+                <img src="https://i.postimg.cc/H8crKNHJ/logo.png" alt="Cliente PW" class="h-10 md:h-12 w-auto grayscale opacity-50 hover:grayscale-0 hover:opacity-100 transition-all duration-300">
+                <img src="https://i.postimg.cc/30vw9DCg/logo.png" alt="Cliente PW" class="h-10 md:h-12 w-auto grayscale opacity-50 hover:grayscale-0 hover:opacity-100 transition-all duration-300">
+                <img src="https://i.postimg.cc/9DjD81nK/logo.png" alt="Cliente PW" class="h-10 md:h-12 w-auto grayscale opacity-50 hover:grayscale-0 hover:opacity-100 transition-all duration-300">
+                <img src="https://i.postimg.cc/PC456HZy/logo.png" alt="Cliente PW" class="h-6 md:h-8 w-auto grayscale opacity-50 hover:grayscale-0 hover:opacity-100 transition-all duration-300">
+                <img src="https://i.postimg.cc/crtTc8By/logo.png" alt="Cliente PW" class="h-10 md:h-12 w-auto grayscale opacity-50 hover:grayscale-0 hover:opacity-100 transition-all duration-300">
+                <img src="https://i.postimg.cc/QxyNpb3T/1773774291435_Logo_Best_Academia.png" alt="Best Academia" class="h-10 md:h-12 w-auto grayscale opacity-50 hover:grayscale-0 hover:opacity-100 transition-all duration-300">
+                <img src="https://i.postimg.cc/sDNfpcr1/1773775888469_Design_sem_nome_1.png" alt="Cliente PW" class="h-10 md:h-12 w-auto grayscale opacity-50 hover:grayscale-0 hover:opacity-100 transition-all duration-300">
+                <img src="https://i.postimg.cc/VL6Lrh3X/1773776043716_Logo_Citrine.png" alt="Citrine" class="h-10 md:h-12 w-auto grayscale opacity-50 hover:grayscale-0 hover:opacity-100 transition-all duration-300">
+                <img src="https://i.postimg.cc/1XTxNvq3/edsvcwd.png" alt="Cliente PW" class="h-10 md:h-12 w-auto grayscale opacity-50 hover:grayscale-0 hover:opacity-100 transition-all duration-300">
+            </div>
+        </div>
+    </section>
+
+    <!-- Soluções (Aprimoradas com Design Robusto) -->
+    <section id="solucoes" class="py-32 bg-pw-dark relative">
+        <div class="texture-overlay"></div>
+        <div class="glow-ambient -left-64 top-0 opacity-50"></div>
+        
+        <div class="max-w-7xl mx-auto px-6 relative z-10">
+            <div class="mb-20 reveal text-center">
+                <h2 class="text-4xl md:text-6xl font-bold uppercase tracking-tighter mb-4 text-pw-light">Soluções <span class="text-pw-brand text-glow">Estratégicas</span></h2>
+                <div class="w-20 h-2 bg-pw-brand mx-auto"></div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Card 1 (Com interação de Vídeo) -->
+                <div class="card-pesado p-8 reveal rounded-xl relative overflow-hidden group cursor-pointer" onclick="openVideoModal('https://player.vimeo.com/video/1174509559?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479&amp;autoplay=1')">
+                    <!-- Máscara escura de fundo no Hover -->
+                    <div class="absolute inset-0 bg-pw-dark/90 opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-10 backdrop-blur-[2px]"></div>
+                    
+                    <!-- Conteúdo Original (que vai encolher e desfocar no Hover) -->
+                    <div class="relative z-0 transition-all duration-500 group-hover:scale-95 group-hover:blur-sm opacity-100 group-hover:opacity-40">
+                        <div class="absolute -right-2 -top-2 text-8xl font-black text-pw-brand opacity-5 pointer-events-none">01</div>
+                        <div class="w-14 h-14 bg-pw-brand/10 border border-pw-brand/20 rounded-xl flex items-center justify-center mb-6 text-pw-brand shadow-[0_0_15px_rgba(0,232,93,0.1)]">
+                            <i data-lucide="target" class="w-7 h-7"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold uppercase tracking-tight mb-3 text-pw-light">Tráfego Pago</h3>
+                        <p class="text-pw-light/60 font-medium text-sm leading-relaxed text-left">
+                            Campanhas de alto impacto em Meta Ads e Google Ads com segmentação estratégica e otimização baseada em dados reais de conversão.
+                        </p>
+                    </div>
+
+                    <!-- Overlay Interativo do Botão Play -->
+                    <div class="absolute inset-0 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-500 z-20 transform translate-y-4 group-hover:translate-y-0">
+                        <div class="w-16 h-16 bg-pw-brand rounded-full flex items-center justify-center shadow-[0_0_30px_rgba(0,232,93,0.5)] group-hover:shadow-[0_0_50px_rgba(0,232,93,0.8)] mb-3 relative transition-all">
+                            <!-- Efeito de pulsação em volta do play -->
+                            <div class="absolute inset-0 rounded-full border border-pw-brand animate-ping opacity-70"></div>
+                            <!-- Ícone de Play com preenchimento (fill) para parecer sólido -->
+                            <i data-lucide="play" class="w-6 h-6 text-pw-dark fill-current ml-1"></i>
+                        </div>
+                        <span class="text-pw-brand font-bold uppercase tracking-widest text-[10px] text-glow border border-pw-brand/30 px-3 py-1 rounded-full bg-pw-brand/10">Ver Estratégia</span>
+                    </div>
+                </div>
+
+                <!-- Card 2 (Design Estratégico - Com Vídeo) -->
+                <div class="card-pesado p-8 reveal delay-100 rounded-xl relative overflow-hidden group cursor-pointer" onclick="openVideoModal('https://player.vimeo.com/video/1174511569?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479&amp;autoplay=1')">
+                    <!-- Máscara escura de fundo no Hover -->
+                    <div class="absolute inset-0 bg-pw-dark/90 opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-10 backdrop-blur-[2px]"></div>
+                    
+                    <!-- Conteúdo Original -->
+                    <div class="relative z-0 transition-all duration-500 group-hover:scale-95 group-hover:blur-sm opacity-100 group-hover:opacity-40">
+                        <div class="absolute -right-2 -top-2 text-8xl font-black text-pw-brand opacity-5 pointer-events-none">02</div>
+                        <div class="w-14 h-14 bg-pw-brand/10 border border-pw-brand/20 rounded-xl flex items-center justify-center mb-6 text-pw-brand shadow-[0_0_15px_rgba(0,232,93,0.1)]">
+                            <i data-lucide="zap" class="w-7 h-7"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold uppercase tracking-tight mb-3 text-pw-light">Design Estratégico</h3>
+                        <p class="text-pw-light/60 font-medium text-sm leading-relaxed text-left">
+                            Criativos de alta performance desenvolvidos para capturar a atenção, gerar percepção de valor e forçar o movimento de compra.
+                        </p>
+                    </div>
+
+                    <!-- Overlay Interativo do Botão Play -->
+                    <div class="absolute inset-0 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-500 z-20 transform translate-y-4 group-hover:translate-y-0">
+                        <div class="w-16 h-16 bg-pw-brand rounded-full flex items-center justify-center shadow-[0_0_30px_rgba(0,232,93,0.5)] group-hover:shadow-[0_0_50px_rgba(0,232,93,0.8)] mb-3 relative transition-all">
+                            <div class="absolute inset-0 rounded-full border border-pw-brand animate-ping opacity-70"></div>
+                            <i data-lucide="play" class="w-6 h-6 text-pw-dark fill-current ml-1"></i>
+                        </div>
+                        <span class="text-pw-brand font-bold uppercase tracking-widest text-[10px] text-glow border border-pw-brand/30 px-3 py-1 rounded-full bg-pw-brand/10">Ver Estratégia</span>
+                    </div>
+                </div>
+
+                <!-- Card 3 (Auditoria de Funil - Com Vídeo) -->
+                <div class="card-pesado p-8 reveal delay-200 rounded-xl relative overflow-hidden group cursor-pointer" onclick="openVideoModal('https://player.vimeo.com/video/1174491850?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479&amp;autoplay=1')">
+                    <!-- Máscara escura de fundo no Hover -->
+                    <div class="absolute inset-0 bg-pw-dark/90 opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-10 backdrop-blur-[2px]"></div>
+                    
+                    <!-- Conteúdo Original -->
+                    <div class="relative z-0 transition-all duration-500 group-hover:scale-95 group-hover:blur-sm opacity-100 group-hover:opacity-40">
+                        <div class="absolute -right-2 -top-2 text-8xl font-black text-pw-brand opacity-5 pointer-events-none">03</div>
+                        <div class="w-14 h-14 bg-pw-brand/10 border border-pw-brand/20 rounded-xl flex items-center justify-center mb-6 text-pw-brand shadow-[0_0_15px_rgba(0,232,93,0.1)]">
+                            <i data-lucide="search" class="w-7 h-7"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold uppercase tracking-tight mb-3 text-pw-light">Auditoria de Funil</h3>
+                        <p class="text-pw-light/60 font-medium text-sm leading-relaxed text-left">
+                            Mapeamento cirúrgico de campanhas, públicos e estrutura de conversão para estancar vazamentos de caixa e escalar o ROI.
+                        </p>
+                    </div>
+
+                    <!-- Overlay Interativo do Botão Play -->
+                    <div class="absolute inset-0 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-500 z-20 transform translate-y-4 group-hover:translate-y-0">
+                        <div class="w-16 h-16 bg-pw-brand rounded-full flex items-center justify-center shadow-[0_0_30px_rgba(0,232,93,0.5)] group-hover:shadow-[0_0_50px_rgba(0,232,93,0.8)] mb-3 relative transition-all">
+                            <div class="absolute inset-0 rounded-full border border-pw-brand animate-ping opacity-70"></div>
+                            <i data-lucide="play" class="w-6 h-6 text-pw-dark fill-current ml-1"></i>
+                        </div>
+                        <span class="text-pw-brand font-bold uppercase tracking-widest text-[10px] text-glow border border-pw-brand/30 px-3 py-1 rounded-full bg-pw-brand/10">Ver Estratégia</span>
+                    </div>
+                </div>
+
+                <!-- Card 4 -->
+                <div class="card-pesado p-8 reveal rounded-xl relative overflow-hidden group">
+                    <div class="absolute -right-2 -top-2 text-8xl font-black text-pw-brand opacity-5 group-hover:scale-110 group-hover:opacity-10 transition-all duration-500 pointer-events-none">04</div>
+                    <div class="w-14 h-14 bg-pw-brand/10 border border-pw-brand/20 rounded-xl flex items-center justify-center mb-6 text-pw-brand shadow-[0_0_15px_rgba(0,232,93,0.1)] group-hover:shadow-[0_0_25px_rgba(0,232,93,0.3)] transition-all">
+                        <i data-lucide="map-pin" class="w-7 h-7"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold uppercase tracking-tight mb-3 text-pw-light relative z-10">Busca Local</h3>
+                    <p class="text-pw-light/60 font-medium text-sm leading-relaxed text-left relative z-10">
+                        Otimização extrema de Google Meu Negócio para dominar o posicionamento nas buscas locais e superar a concorrência.
+                    </p>
+                </div>
+
+                <!-- Card 5 (Auditoria Comercial - Com Vídeo) -->
+                <div class="card-pesado p-8 reveal delay-100 rounded-xl relative overflow-hidden group cursor-pointer" onclick="openVideoModal('https://player.vimeo.com/video/1174491850?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479&amp;autoplay=1')">
+                    <!-- Máscara escura de fundo no Hover -->
+                    <div class="absolute inset-0 bg-pw-dark/90 opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-10 backdrop-blur-[2px]"></div>
+                    
+                    <!-- Conteúdo Original -->
+                    <div class="relative z-0 transition-all duration-500 group-hover:scale-95 group-hover:blur-sm opacity-100 group-hover:opacity-40">
+                        <div class="absolute -right-2 -top-2 text-8xl font-black text-pw-brand opacity-5 pointer-events-none">05</div>
+                        <div class="w-14 h-14 bg-pw-brand/10 border border-pw-brand/20 rounded-xl flex items-center justify-center mb-6 text-pw-brand shadow-[0_0_15px_rgba(0,232,93,0.1)]">
+                            <i data-lucide="briefcase" class="w-7 h-7"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold uppercase tracking-tight mb-3 text-pw-light">Auditoria Comercial</h3>
+                        <p class="text-pw-light/60 font-medium text-sm leading-relaxed text-left">
+                            Avaliação e reestruturação do processo de vendas e atendimento. Transformamos seu time comercial em uma máquina de fechamento.
+                        </p>
+                    </div>
+
+                    <!-- Overlay Interativo do Botão Play -->
+                    <div class="absolute inset-0 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-500 z-20 transform translate-y-4 group-hover:translate-y-0">
+                        <div class="w-16 h-16 bg-pw-brand rounded-full flex items-center justify-center shadow-[0_0_30px_rgba(0,232,93,0.5)] group-hover:shadow-[0_0_50px_rgba(0,232,93,0.8)] mb-3 relative transition-all">
+                            <div class="absolute inset-0 rounded-full border border-pw-brand animate-ping opacity-70"></div>
+                            <i data-lucide="play" class="w-6 h-6 text-pw-dark fill-current ml-1"></i>
+                        </div>
+                        <span class="text-pw-brand font-bold uppercase tracking-widest text-[10px] text-glow border border-pw-brand/30 px-3 py-1 rounded-full bg-pw-brand/10">Ver Estratégia</span>
+                    </div>
+                </div>
+
+                <!-- Card 6 -->
+                <div class="card-pesado p-8 reveal delay-200 rounded-xl relative overflow-hidden group">
+                    <div class="absolute -right-2 -top-2 text-8xl font-black text-pw-brand opacity-5 group-hover:scale-110 group-hover:opacity-10 transition-all duration-500 pointer-events-none">06</div>
+                    <div class="w-14 h-14 bg-pw-brand/10 border border-pw-brand/20 rounded-xl flex items-center justify-center mb-6 text-pw-brand shadow-[0_0_15px_rgba(0,232,93,0.1)] group-hover:shadow-[0_0_25px_rgba(0,232,93,0.3)] transition-all">
+                        <i data-lucide="terminal" class="w-7 h-7"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold uppercase tracking-tight mb-3 text-pw-light relative z-10">Sistemas Customizados</h3>
+                    <p class="text-pw-light/60 font-medium text-sm leading-relaxed text-left relative z-10">
+                        Desenvolvimento de sistemas internos blindados para gestão de projetos, tarefas e fluxo financeiro sob medida para o seu negócio.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Processo (Radar Orbital) -->
+    <section id="processo" class="py-32 bg-pw-base relative border-y border-pw-brand/10 overflow-hidden">
+        
+        <!-- Fundo Animado (Vimeo) replicado da primeira seção -->
+        <div class="absolute inset-0 z-0 overflow-hidden pointer-events-none flex items-center justify-center">
+            <!-- Container redimensionado para agir como "cover" -->
+            <div class="w-[200vw] md:w-[150vw] lg:w-[120vw] opacity-50 blur-[6px] transform scale-125">
+                <div style="padding:75% 0 0 0;position:relative;">
+                    <iframe src="https://player.vimeo.com/video/1174501690?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479&amp;autoplay=1&amp;muted=1&amp;loop=1&amp;background=1" frameborder="0" allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share" referrerpolicy="strict-origin-when-cross-origin" style="position:absolute;top:0;left:0;width:100%;height:100%;" title="tec"></iframe>
+                </div>
+            </div>
+            
+            <!-- Tintura verde para encaixar na paleta -->
+            <div class="absolute inset-0 bg-[#00E85D] mix-blend-overlay opacity-10"></div>
+            <!-- Degradê duplo para misturar suavemente com as bordas da seção -->
+            <div class="absolute inset-0 bg-gradient-to-b from-pw-base via-pw-base/60 to-pw-base"></div>
+        </div>
+
+        <div class="glow-ambient right-0 top-1/2 transform translate-x-1/2 -translate-y-1/2 opacity-30 z-10"></div>
+        
+        <div class="max-w-7xl mx-auto px-6 relative z-10">
+            <div class="text-center mb-24 reveal">
+                <h2 class="text-4xl md:text-6xl font-bold uppercase tracking-tighter mb-4 text-pw-light">Nosso processo <span class="text-pw-brand">não tem fim.</span></h2>
+                <p class="text-lg md:text-xl font-semibold text-pw-light/50 tracking-widest uppercase">Porque vendas não têm linha de chegada.</p>
+            </div>
+
+            <!-- Bússola / Radar Orbital -->
+            <div class="reveal delay-100 pt-10 pb-20">
+                <div class="orbit-wrapper">
+                    <!-- Linhas decorativas do Radar -->
+                    <div class="absolute inset-8 rounded-full border border-pw-brand/10"></div>
+                    <div class="absolute inset-20 rounded-full border border-pw-brand/5"></div>
+                    
+                    <!-- Efeito de varredura (Radar sweep) -->
+                    <div class="radar-sweep"></div>
+                    
+                    <!-- Contêiner Giratório para os Itens Orbitais -->
+                    <div class="orbit-container">
+                        <div class="orbit-item item-1">
+                            <div class="orbit-item-inner">
+                                <div class="w-full h-full bg-pw-elevated border border-pw-brand/30 rounded-2xl shadow-[0_0_15px_rgba(0,232,93,0.1)] flex flex-col items-center justify-center gap-2 transition-all hover:scale-105 hover:border-pw-brand">
+                                    <i data-lucide="mouse-pointer-click" class="w-6 h-6 md:w-8 md:h-8 text-pw-brand"></i>
+                                    <h4 class="text-[0.6rem] md:text-[0.7rem] font-bold uppercase tracking-tight text-pw-light">Tráfego</h4>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="orbit-item item-2">
+                            <div class="orbit-item-inner">
+                                <div class="w-full h-full bg-pw-elevated border border-pw-brand/30 rounded-2xl shadow-[0_0_15px_rgba(0,232,93,0.1)] flex flex-col items-center justify-center gap-2 transition-all hover:scale-105 hover:border-pw-brand">
+                                    <i data-lucide="filter" class="w-6 h-6 md:w-8 md:h-8 text-pw-brand"></i>
+                                    <h4 class="text-[0.6rem] md:text-[0.7rem] font-bold uppercase tracking-tight text-pw-light">Conversão</h4>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="orbit-item item-3">
+                            <div class="orbit-item-inner">
+                                <div class="w-full h-full bg-pw-elevated border border-pw-brand/30 rounded-2xl shadow-[0_0_15px_rgba(0,232,93,0.1)] flex flex-col items-center justify-center gap-2 transition-all hover:scale-105 hover:border-pw-brand">
+                                    <i data-lucide="repeat" class="w-6 h-6 md:w-8 md:h-8 text-pw-brand"></i>
+                                    <h4 class="text-[0.6rem] md:text-[0.7rem] font-bold uppercase tracking-tight text-pw-light">Retenção</h4>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="orbit-item item-4">
+                            <div class="orbit-item-inner">
+                                <div class="w-full h-full bg-pw-elevated border border-pw-brand/30 rounded-2xl shadow-[0_0_15px_rgba(0,232,93,0.1)] flex flex-col items-center justify-center gap-2 transition-all hover:scale-105 hover:border-pw-brand">
+                                    <i data-lucide="share-2" class="w-6 h-6 md:w-8 md:h-8 text-pw-brand"></i>
+                                    <h4 class="text-[0.6rem] md:text-[0.7rem] font-bold uppercase tracking-tight text-pw-light text-center">Engajamento</h4>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Núcleo Central: Vendas -->
+                    <div class="orbit-center">
+                        <div class="bg-pw-elevated border-2 border-pw-brand shadow-[0_0_50px_rgba(0,232,93,0.4)] rounded-full w-40 h-40 md:w-56 md:h-56 flex flex-col items-center justify-center relative z-20">
+                            <!-- Efeito de pulso atrás do texto central -->
+                            <div class="absolute inset-0 rounded-full border border-pw-brand/50 animate-ping opacity-20"></div>
+                            
+                            <p class="text-[0.6rem] md:text-xs font-bold tracking-[0.3em] mb-1 opacity-80 uppercase text-pw-light">O Único Foco</p>
+                            <h3 class="text-3xl md:text-5xl font-black tracking-tighter uppercase text-glow text-pw-brand">Vendas</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Mapa de Atuação -->
+    <section class="py-32 bg-pw-dark relative overflow-hidden">
+        <div class="texture-overlay"></div>
+        <div class="max-w-7xl mx-auto px-6 relative z-10">
+            <div class="mb-16 reveal text-center">
+                <h2 class="text-4xl md:text-6xl font-bold uppercase tracking-tighter mb-4 text-pw-light">Atuação <span class="text-pw-brand text-glow">Global</span></h2>
+                <p class="text-pw-light/50 font-semibold uppercase tracking-widest">Estratégias escaláveis sem fronteiras.</p>
+            </div>
+
+            <div class="relative w-full aspect-[2754/1398] max-w-5xl mx-auto reveal delay-100 p-4 rounded-xl overflow-hidden bg-[#0a0f0d]">
+                <div class="absolute inset-0 bg-pw-brand opacity-60" style="mask-image: url('https://upload.wikimedia.org/wikipedia/commons/8/80/World_map_-_low_resolution.svg'); mask-size: 100% 100%; mask-repeat: no-repeat; mask-position: center; -webkit-mask-image: url('https://upload.wikimedia.org/wikipedia/commons/8/80/World_map_-_low_resolution.svg'); -webkit-mask-size: 100% 100%; -webkit-mask-repeat: no-repeat; -webkit-mask-position: center;"></div>
+
+                <div id="map-pins" class="absolute inset-0 pointer-events-none">
+                    <div class="relative w-full h-full pointer-events-auto">
+                        <!-- Brasil -->
+                        <div class="pin" style="top: 59.5%; left: 36.0%;"><span class="pin-label">Goiás</span></div>
+                        <div class="pin" style="top: 58.5%; left: 34.0%;"><span class="pin-label">Mato Grosso</span></div>
+                        <div class="pin" style="top: 63.5%; left: 37.0%;"><span class="pin-label">São Paulo</span></div>
+                        <div class="pin" style="top: 67.0%; left: 35.5%;"><span class="pin-label">Rio Grande do Sul</span></div>
+                        <div class="pin" style="top: 61.5%; left: 37.5%;"><span class="pin-label">Minas Gerais</span></div>
+                        <div class="pin" style="top: 54.5%; left: 40.0%;"><span class="pin-label">Pernambuco</span></div>
+                        <div class="pin" style="top: 52.5%; left: 39.0%;"><span class="pin-label">Ceará</span></div>
+                        <div class="pin" style="top: 57.5%; left: 39.0%;"><span class="pin-label">Bahia</span></div>
+                        <div class="pin" style="top: 59.0%; left: 36.5%;"><span class="pin-label">Distrito Federal</span></div>
+                        
+                        <!-- Exterior -->
+                        <div class="pin" style="top: 28.5%; left: 47.5%;"><span class="pin-label">Portugal</span></div>
+                        <div class="pin" style="top: 21.5%; left: 49.8%;"><span class="pin-label">Londres</span></div>
+                        <div class="pin" style="top: 31.5%; left: 17.0%;"><span class="pin-label">Beverly Hills, EUA</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sobre a PerfoWise -->
+    <section id="sobre" class="py-32 bg-pw-base relative border-t border-pw-brand/10">
+        <div class="max-w-6xl mx-auto px-6 relative z-10 reveal">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl md:text-6xl font-bold uppercase tracking-tighter mb-4 text-glow text-pw-brand">PERFOWISE</h2>
+                <p class="text-lg md:text-xl font-semibold text-pw-light/70 uppercase tracking-widest">A parceira estratégica do seu crescimento</p>
+            </div>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+                <!-- Coluna da Esquerda: Espaço para Foto -->
+                <div class="relative w-full aspect-[4/3] lg:aspect-square rounded-2xl overflow-hidden border border-pw-brand/20 group">
+                    <div class="absolute inset-0 bg-[#1F4141] mix-blend-overlay opacity-80 z-10 transition-opacity duration-700 group-hover:opacity-60 pointer-events-none"></div>
+                    <div class="absolute inset-0 bg-[#0A1310] mix-blend-multiply opacity-40 z-10 pointer-events-none"></div>
+                    <img src="https://i.postimg.cc/vTR3bd6c/Captura_de_Tela_2026_03_10_a_s_12_55_06_(1).webp" alt="PerfoWise" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 relative z-0">
+                </div>
+
+                <!-- Coluna da Direita: Textos Alinhados à Esquerda -->
+                <div class="space-y-6 text-base lg:text-lg text-pw-light/70 font-medium leading-relaxed text-left">
+                    <p>A PerfoWise não é uma agência tradicional. Somos uma assessoria de marketing orientada por dados, performance e crescimento real de empresas.</p>
+                    <p>Fundada por especialistas com mais de 10 anos de experiência, nascemos com um único objetivo: transformar marketing em um motor previsível de aquisição de clientes e faturamento.</p>
+                    <p>Com atuação nacional e internacional, construímos estratégias de crescimento sustentáveis combinando tráfego pago agressivo, inteligência de dados, posicionamento e conversão.</p>
+                    <p class="font-bold text-pw-light mt-8 pt-6 border-t border-pw-light/10 uppercase tracking-widest text-lg lg:text-xl text-left">Nós somos a performance.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Fundadores (Centralizado com Animação Traseira) -->
+    <section class="py-32 bg-pw-dark relative">
+        <div class="texture-overlay"></div>
+        <div class="max-w-7xl mx-auto px-6 relative z-10">
+            <div class="text-center mb-20 reveal">
+                <h2 class="text-4xl md:text-6xl font-bold uppercase tracking-tighter mb-4 text-pw-light">A Liderança</h2>
+                <div class="w-20 h-2 bg-pw-brand mx-auto"></div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-16 lg:gap-20 max-w-5xl mx-auto">
+                <!-- Osmar -->
+                <div class="reveal delay-100 group flex flex-col items-center text-center">
+                    <div class="relative w-48 h-48 md:w-56 md:h-56 mb-8 flex justify-center items-center shrink-0">
+                        <!-- Linhas Orbitais Traseiras -->
+                        <div class="absolute inset-[-15px] md:inset-[-20px] rounded-full border-[1px] border-dashed border-pw-brand/30 animate-[spin_20s_linear_infinite]"></div>
+                        <div class="absolute inset-[-5px] md:inset-[-10px] rounded-full border-[1px] border-pw-brand/10 animate-[spin_15s_linear_infinite_reverse]"></div>
+                        
+                        <!-- Link do LinkedIn -->
+                        <a href="https://www.linkedin.com/in/osmarcostamkt/" target="_blank" rel="noopener noreferrer" class="relative w-full h-full border-2 border-pw-elevated rounded-2xl group-hover:border-pw-brand transition-colors duration-500 overflow-hidden z-10 bg-pw-base block cursor-pointer">
+                            <img src="https://i.postimg.cc/w3f3zgbQ/osmar.jpg" alt="Osmar Costa" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                        </a>
+                    </div>
+                    <div>
+                        <h3 class="text-3xl font-bold uppercase tracking-tight mb-1 text-pw-light">Osmar Costa</h3>
+                        <p class="text-pw-brand font-semibold text-xs tracking-widest uppercase mb-4">Cofundador | Publicitário</p>
+                        <p class="text-pw-light/60 font-medium text-sm leading-relaxed max-w-md mx-auto text-center">
+                            Publicitário, mercadólogo e especialista em neuromarketing. Com passagem pela V4 Company, desenvolve arquitetura de conversão, aquisição de clientes e construção de forte autoridade digital para marcas.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Rafael -->
+                <div class="reveal delay-200 group flex flex-col items-center text-center">
+                    <div class="relative w-48 h-48 md:w-56 md:h-56 mb-8 flex justify-center items-center shrink-0">
+                        <!-- Linhas Orbitais Traseiras -->
+                        <div class="absolute inset-[-15px] md:inset-[-20px] rounded-full border-[1px] border-dashed border-pw-brand/30 animate-[spin_20s_linear_infinite]"></div>
+                        <div class="absolute inset-[-5px] md:inset-[-10px] rounded-full border-[1px] border-pw-brand/10 animate-[spin_15s_linear_infinite_reverse]"></div>
+                        
+                        <!-- Link do LinkedIn -->
+                        <a href="https://www.linkedin.com/in/ufaelgestor-221466227/" target="_blank" rel="noopener noreferrer" class="relative w-full h-full border-2 border-pw-elevated rounded-2xl group-hover:border-pw-brand transition-colors duration-500 overflow-hidden z-10 bg-pw-base block cursor-pointer">
+                            <img src="https://i.postimg.cc/Ff0jB2P4/rafael.jpg" alt="Rafael Oliveira" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                        </a>
+                    </div>
+                    <div>
+                        <h3 class="text-3xl font-bold uppercase tracking-tight mb-1 text-pw-light">Rafael Oliveira</h3>
+                        <p class="text-pw-brand font-semibold text-xs tracking-widest uppercase mb-4">Cofundador | Strategist</p>
+                        <p class="text-pw-light/60 font-medium text-sm leading-relaxed max-w-md mx-auto text-center">
+                            Gestor de tráfego pago e especialista em marketing de performance. Expertise profunda em rastreamento e análise de dados. Atuou na V4 Company e hoje lidera o crescimento de empresas com estratégias sólidas e orientadas a caixa.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Formulário Agressivo -->
+    <section id="auditoria" class="py-32 bg-pw-base relative border-t border-pw-brand/20">
+        <div class="glow-ambient left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 opacity-20"></div>
+        
+        <div class="max-w-7xl mx-auto px-6 relative z-10 reveal">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl md:text-6xl font-bold uppercase tracking-tighter mb-4 text-pw-brand text-glow">Auditoria Estratégica</h2>
+                <p class="text-pw-light/70 font-semibold uppercase tracking-widest text-sm">Raio-x do seu processo de vendas.</p>
+            </div>
+
+            <div class="bg-pw-elevated border border-pw-brand/20 rounded-2xl p-6 md:p-12 lg:p-16 relative overflow-hidden shadow-[0_0_50px_rgba(0,0,0,0.5)]">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+                    
+                    <!-- Coluna Esquerda: Vídeo Vimeo (Vertical) -->
+                    <div class="w-full max-w-[320px] mx-auto relative rounded-2xl overflow-hidden border border-pw-brand/30 shadow-[0_0_30px_rgba(0,232,93,0.15)] bg-black aspect-[9/16] flex justify-center items-center">
+                        <span class="text-pw-light/30 text-xs font-semibold uppercase tracking-widest absolute z-0 animate-pulse">A carregar...</span>
+                        
+                        <iframe 
+                            src="https://player.vimeo.com/video/1174491850?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479&amp;autoplay=1&amp;muted=1&amp;loop=1" 
+                            frameborder="0" 
+                            allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share" 
+                            referrerpolicy="strict-origin-when-cross-origin" 
+                            title="Auditoria"
+                            class="absolute top-0 left-0 w-full h-full z-10">
+                        </iframe>
+                    </div>
+
+                    <!-- Coluna Direita: Formulário -->
+                    <div class="w-full">
+                        <form class="space-y-6" onsubmit="event.preventDefault(); alert('Dados enviados. Analisaremos seu perfil.');">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div class="space-y-2 text-left">
+                                    <label class="text-xs font-semibold uppercase tracking-widest text-pw-light/50">Nome Completo</label>
+                                    <input type="text" required class="w-full bg-pw-base border border-pw-light/10 px-4 py-4 text-pw-light focus:outline-none focus:border-pw-brand focus:ring-1 focus:ring-pw-brand transition-all rounded-lg">
+                                </div>
+                                <div class="space-y-2 text-left">
+                                    <label class="text-xs font-semibold uppercase tracking-widest text-pw-light/50">WhatsApp</label>
+                                    <input type="tel" required class="w-full bg-pw-base border border-pw-light/10 px-4 py-4 text-pw-light focus:outline-none focus:border-pw-brand focus:ring-1 focus:ring-pw-brand transition-all rounded-lg">
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div class="space-y-2 text-left">
+                                    <label class="text-xs font-semibold uppercase tracking-widest text-pw-light/50">Sua Empresa</label>
+                                    <input type="text" required class="w-full bg-pw-base border border-pw-light/10 px-4 py-4 text-pw-light focus:outline-none focus:border-pw-brand focus:ring-1 focus:ring-pw-brand transition-all rounded-lg">
+                                </div>
+                                <div class="space-y-2 text-left">
+                                    <label class="text-xs font-semibold uppercase tracking-widest text-pw-light/50">Segmento</label>
+                                    <input type="text" required class="w-full bg-pw-base border border-pw-light/10 px-4 py-4 text-pw-light focus:outline-none focus:border-pw-brand focus:ring-1 focus:ring-pw-brand transition-all rounded-lg">
+                                </div>
+                            </div>
+
+                            <div class="space-y-2 text-left">
+                                <label class="text-xs font-semibold uppercase tracking-widest text-pw-light/50">Faturamento Mensal</label>
+                                <select required class="w-full bg-pw-base border border-pw-light/10 px-4 py-4 text-pw-light focus:outline-none focus:border-pw-brand focus:ring-1 focus:ring-pw-brand transition-all appearance-none rounded-lg">
+                                    <option value="" disabled selected>Selecione seu momento atual</option>
+                                    <option value="ate-10k">Até R$ 10.000</option>
+                                    <option value="10k-30k">R$ 10.000 a R$ 30.000</option>
+                                    <option value="30k-50k">R$ 30.000 a R$ 50.000</option>
+                                    <option value="50k-100k">R$ 50.000 a R$ 100.000</option>
+                                    <option value="100k-300k">R$ 100.000 a R$ 300.000</option>
+                                    <option value="300k-500k">R$ 300.000 a R$ 500.000</option>
+                                    <option value="500k-1m">R$ 500.000 a R$ 1 Milhão</option>
+                                    <option value="mais-1m">Mais de R$ 1 Milhão</option>
+                                </select>
+                            </div>
+
+                            <div class="pt-8">
+                                <button type="submit" class="w-full btn-agressivo bg-pw-brand text-pw-dark font-bold text-xl uppercase tracking-widest py-5 rounded-xl flex justify-center items-center gap-3 transition-colors">
+                                    Solicitar Análise Gratuita
+                                    <i data-lucide="arrow-right" class="w-6 h-6"></i>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-pw-elevated py-16 border-t border-pw-brand/10">
+        <div class="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-12 text-sm">
+            <div class="col-span-1 md:col-span-2 space-y-4">
+                <div class="flex items-center gap-3 mb-6">
+                    <img src="https://i.postimg.cc/GBHz27hJ/logo.png" alt="PerfoWise Logo" class="h-20 md:h-24 w-auto">
+                </div>
+                <p class="text-pw-light/50 font-medium max-w-sm uppercase tracking-wider text-xs leading-relaxed text-left">Assessoria de marketing orientada a alta conversão e escala de vendas.</p>
+            </div>
+
+            <div class="space-y-4 text-left">
+                <h4 class="font-bold uppercase tracking-widest text-pw-light/30 mb-6 border-b border-pw-light/10 pb-2">Navegação</h4>
+                <ul class="space-y-3 font-semibold uppercase text-xs tracking-widest">
+                    <li><a href="#solucoes" class="text-pw-light/60 hover:text-pw-brand transition-colors">Soluções</a></li>
+                    <li><a href="#processo" class="text-pw-light/60 hover:text-pw-brand transition-colors">Processo</a></li>
+                    <li><a href="#sobre" class="text-pw-light/60 hover:text-pw-brand transition-colors">A Empresa</a></li>
+                </ul>
+            </div>
+
+            <div class="space-y-4 text-left">
+                <h4 class="font-bold uppercase tracking-widest text-pw-light/30 mb-6 border-b border-pw-light/10 pb-2">Contato</h4>
+                <ul class="space-y-3 font-semibold text-xs tracking-widest leading-relaxed">
+                    <li>
+                        <a href="https://www.instagram.com/pwmarketingbr/" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 text-pw-light/60 uppercase hover:text-pw-brand transition-colors">
+                            <i data-lucide="instagram" class="w-4 h-4 text-pw-brand shrink-0"></i> @pwmarketingbr
+                        </a>
+                    </li>
+                    <li class="flex items-center gap-2 text-pw-light/60 uppercase">
+                        <i data-lucide="mail" class="w-4 h-4 text-pw-brand shrink-0"></i> perfowise@gmail.com
+                    </li>
+                    <li class="flex items-start gap-2 text-pw-light/60 uppercase">
+                        <i data-lucide="map-pin" class="w-4 h-4 text-pw-brand shrink-0 mt-0.5"></i> 
+                        <a href="https://maps.app.goo.gl/CH8fpxLGccxnMbvN8" target="_blank" rel="noopener noreferrer" class="hover:text-pw-brand transition-colors">
+                            Av. Sucuri 1.730, Setor Jaó,<br>Goiânia-GO, Brasil
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="max-w-7xl mx-auto px-6 mt-16 pt-8 border-t border-pw-light/5 flex flex-col md:flex-row justify-between items-center gap-4">
+            <p class="text-pw-light/30 text-xs font-semibold tracking-widest uppercase">&copy; 2026 PerfoWise. Todos os direitos reservados.</p>
+            <div class="flex items-center gap-2 text-xs font-bold tracking-widest uppercase text-pw-brand">
+                <span>Performance</span>
+                <span class="text-pw-light/30 px-1">|</span>
+                <span>Venda</span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Modal de Vídeo (Fica escondido até ser clicado) -->
+    <div id="video-modal" class="fixed inset-0 z-[100] bg-pw-base/95 backdrop-blur-md hidden opacity-0 transition-opacity duration-500 flex items-center justify-center p-4">
+        <!-- Fundo clicável para fechar o vídeo -->
+        <div class="absolute inset-0 cursor-pointer" onclick="closeVideoModal()"></div>
+        
+        <!-- Botão Fechar -->
+        <button onclick="closeVideoModal()" class="absolute top-6 right-6 text-pw-light hover:text-pw-brand transition-colors z-10">
+            <i data-lucide="x" class="w-10 h-10"></i>
+        </button>
+        
+        <!-- Moldura do Vídeo -->
+        <div class="relative w-full max-w-[320px] md:max-w-[400px] aspect-[9/16] bg-black rounded-2xl overflow-hidden shadow-[0_0_50px_rgba(0,232,93,0.3)] z-10 border border-pw-brand/30">
+            <span class="text-pw-light/30 text-xs font-semibold uppercase tracking-widest absolute inset-0 flex items-center justify-center z-0 animate-pulse">A carregar...</span>
+            <iframe id="modal-iframe" src="" frameborder="0" allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share" style="position:absolute;top:0;left:0;width:100%;height:100%;z-index:10;"></iframe>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script>
+        lucide.createIcons();
+
+        // Lógica do Modal de Vídeo
+        function openVideoModal(url) {
+            const modal = document.getElementById('video-modal');
+            const iframe = document.getElementById('modal-iframe');
+            iframe.src = url;
+            modal.classList.remove('hidden');
+            // Pequeno delay para a transição de CSS funcionar no Display:none
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+            }, 10);
+            document.body.style.overflow = 'hidden'; // Evita scroll ao fundo
+        }
+
+        function closeVideoModal() {
+            const modal = document.getElementById('video-modal');
+            const iframe = document.getElementById('modal-iframe');
+            modal.classList.add('opacity-0');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                iframe.src = ''; // Corta o vídeo/áudio quando fecha
+                document.body.style.overflow = ''; // Devolve o scroll
+            }, 500);
+        }
+
+        // Reveal Animation
+        const revealCallback = (entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                    observer.unobserve(entry.target);
+                }
+            });
+        };
+        const revealObserver = new IntersectionObserver(revealCallback, { threshold: 0.1, rootMargin: "0px 0px -50px 0px" });
+        document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+        // Counter
+        const counterElement = document.getElementById('revenue-counter');
+        const counterSection = document.getElementById('proof-section');
+        let counterStarted = false;
+
+        const formatNumber = (num) => num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+        const animateCounter = () => {
+            const target = 30000000;
+            let current = 0;
+            const timer = setInterval(() => {
+                current += target / 100;
+                if (current >= target) {
+                    current = target;
+                    clearInterval(timer);
+                }
+                counterElement.innerText = formatNumber(Math.floor(current));
+            }, 20);
+        };
+
+        new IntersectionObserver((entries) => {
+            if (entries[0].isIntersecting && !counterStarted) {
+                counterStarted = true; animateCounter();
+            }
+        }, { threshold: 0.5 }).observe(counterSection);
+    </script>
+
+    <!-- Floating WhatsApp Button (Sem Animação de Pulso) -->
+    <a href="https://wa.me/550000000000" target="_blank" class="fixed bottom-6 right-6 z-50 bg-[#25D366] text-white p-4 rounded-full shadow-[0_4px_20px_rgba(37,211,102,0.4)] hover:scale-110 hover:shadow-[0_6px_30px_rgba(37,211,102,0.6)] transition-all duration-300 group flex items-center justify-center">
+        <svg viewBox="0 0 24 24" fill="currentColor" class="w-8 h-8 relative z-10"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 0 0-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/></svg>
+    </a>
+</body>
+</html>
+```
