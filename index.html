@@ -39,6 +39,9 @@
     <!-- Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
 
+    <!-- EmailJS SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+
     <style>
         /* Custom Styles & Animations */
         body {
@@ -789,50 +792,53 @@
 
                     <!-- Coluna Direita: Formulário -->
                     <div class="w-full">
-                        <form class="space-y-6" onsubmit="event.preventDefault(); alert('Dados enviados. Analisaremos seu perfil.');">
+                        <form id="auditoria-form" class="space-y-6">
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div class="space-y-2 text-left">
                                     <label class="text-xs font-semibold uppercase tracking-widest text-pw-light/50">Nome Completo</label>
-                                    <input type="text" required class="w-full bg-pw-base border border-pw-light/10 px-4 py-4 text-pw-light focus:outline-none focus:border-pw-brand focus:ring-1 focus:ring-pw-brand transition-all rounded-lg">
+                                    <input type="text" id="nome_completo" name="nome_completo" required class="w-full bg-pw-base border border-pw-light/10 px-4 py-4 text-pw-light focus:outline-none focus:border-pw-brand focus:ring-1 focus:ring-pw-brand transition-all rounded-lg">
                                 </div>
                                 <div class="space-y-2 text-left">
                                     <label class="text-xs font-semibold uppercase tracking-widest text-pw-light/50">WhatsApp</label>
-                                    <input type="tel" required class="w-full bg-pw-base border border-pw-light/10 px-4 py-4 text-pw-light focus:outline-none focus:border-pw-brand focus:ring-1 focus:ring-pw-brand transition-all rounded-lg">
+                                    <input type="tel" id="whatsapp" name="whatsapp" required class="w-full bg-pw-base border border-pw-light/10 px-4 py-4 text-pw-light focus:outline-none focus:border-pw-brand focus:ring-1 focus:ring-pw-brand transition-all rounded-lg">
                                 </div>
                             </div>
 
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div class="space-y-2 text-left">
                                     <label class="text-xs font-semibold uppercase tracking-widest text-pw-light/50">Sua Empresa</label>
-                                    <input type="text" required class="w-full bg-pw-base border border-pw-light/10 px-4 py-4 text-pw-light focus:outline-none focus:border-pw-brand focus:ring-1 focus:ring-pw-brand transition-all rounded-lg">
+                                    <input type="text" id="empresa" name="empresa" required class="w-full bg-pw-base border border-pw-light/10 px-4 py-4 text-pw-light focus:outline-none focus:border-pw-brand focus:ring-1 focus:ring-pw-brand transition-all rounded-lg">
                                 </div>
                                 <div class="space-y-2 text-left">
                                     <label class="text-xs font-semibold uppercase tracking-widest text-pw-light/50">Segmento</label>
-                                    <input type="text" required class="w-full bg-pw-base border border-pw-light/10 px-4 py-4 text-pw-light focus:outline-none focus:border-pw-brand focus:ring-1 focus:ring-pw-brand transition-all rounded-lg">
+                                    <input type="text" id="segmento" name="segmento" required class="w-full bg-pw-base border border-pw-light/10 px-4 py-4 text-pw-light focus:outline-none focus:border-pw-brand focus:ring-1 focus:ring-pw-brand transition-all rounded-lg">
                                 </div>
                             </div>
 
                             <div class="space-y-2 text-left">
                                 <label class="text-xs font-semibold uppercase tracking-widest text-pw-light/50">Faturamento Mensal</label>
-                                <select required class="w-full bg-pw-base border border-pw-light/10 px-4 py-4 text-pw-light focus:outline-none focus:border-pw-brand focus:ring-1 focus:ring-pw-brand transition-all appearance-none rounded-lg">
+                                <select id="faturamento" name="faturamento" required class="w-full bg-pw-base border border-pw-light/10 px-4 py-4 text-pw-light focus:outline-none focus:border-pw-brand focus:ring-1 focus:ring-pw-brand transition-all appearance-none rounded-lg">
                                     <option value="" disabled selected>Selecione seu momento atual</option>
-                                    <option value="ate-10k">Até R$ 10.000</option>
-                                    <option value="10k-30k">R$ 10.000 a R$ 30.000</option>
-                                    <option value="30k-50k">R$ 30.000 a R$ 50.000</option>
-                                    <option value="50k-100k">R$ 50.000 a R$ 100.000</option>
-                                    <option value="100k-300k">R$ 100.000 a R$ 300.000</option>
-                                    <option value="300k-500k">R$ 300.000 a R$ 500.000</option>
-                                    <option value="500k-1m">R$ 500.000 a R$ 1 Milhão</option>
-                                    <option value="mais-1m">Mais de R$ 1 Milhão</option>
+                                    <option value="Até R$ 10.000">Até R$ 10.000</option>
+                                    <option value="R$ 10.000 a R$ 30.000">R$ 10.000 a R$ 30.000</option>
+                                    <option value="R$ 30.000 a R$ 50.000">R$ 30.000 a R$ 50.000</option>
+                                    <option value="R$ 50.000 a R$ 100.000">R$ 50.000 a R$ 100.000</option>
+                                    <option value="R$ 100.000 a R$ 300.000">R$ 100.000 a R$ 300.000</option>
+                                    <option value="R$ 300.000 a R$ 500.000">R$ 300.000 a R$ 500.000</option>
+                                    <option value="R$ 500.000 a R$ 1 Milhão">R$ 500.000 a R$ 1 Milhão</option>
+                                    <option value="Mais de R$ 1 Milhão">Mais de R$ 1 Milhão</option>
                                 </select>
                             </div>
 
                             <div class="pt-8">
-                                <button type="submit" class="w-full btn-agressivo bg-pw-brand text-pw-dark font-bold text-xl uppercase tracking-widest py-5 rounded-xl flex justify-center items-center gap-3 transition-colors">
-                                    Solicitar Análise Gratuita
-                                    <i data-lucide="arrow-right" class="w-6 h-6"></i>
+                                <button type="submit" id="btn-submit" class="w-full btn-agressivo bg-pw-brand text-pw-dark font-bold text-xl uppercase tracking-widest py-5 rounded-xl flex justify-center items-center gap-3 transition-colors">
+                                    <span id="btn-text">Solicitar Análise Gratuita</span>
+                                    <i data-lucide="arrow-right" class="w-6 h-6" id="btn-icon"></i>
                                 </button>
                             </div>
+
+                            <!-- Mensagem de feedback -->
+                            <div id="form-feedback" class="hidden text-center py-4 rounded-lg font-bold uppercase tracking-widest text-sm"></div>
                         </form>
                     </div>
                 </div>
@@ -971,6 +977,80 @@
                 counterStarted = true; animateCounter();
             }
         }, { threshold: 0.5 }).observe(counterSection);
+
+        // ===== EMAILJS: Integração do Formulário =====
+        (function() {
+            // Inicializa o EmailJS com a Public Key
+            emailjs.init('-8b4nqo9BvrINki6e');
+
+            const form = document.getElementById('auditoria-form');
+            const btnSubmit = document.getElementById('btn-submit');
+            const btnText = document.getElementById('btn-text');
+            const btnIcon = document.getElementById('btn-icon');
+            const feedback = document.getElementById('form-feedback');
+
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+
+                // Estado de loading
+                btnSubmit.disabled = true;
+                btnText.textContent = 'Enviando...';
+                btnIcon.style.display = 'none';
+                btnSubmit.classList.add('opacity-70', 'cursor-not-allowed');
+                feedback.classList.add('hidden');
+
+                // Monta os parâmetros do template
+                const templateParams = {
+                    nome_completo: document.getElementById('nome_completo').value,
+                    whatsapp: document.getElementById('whatsapp').value,
+                    empresa: document.getElementById('empresa').value,
+                    segmento: document.getElementById('segmento').value,
+                    faturamento: document.getElementById('faturamento').value,
+                    email_to: 'perfowise@gmail.com',
+                };
+
+                emailjs.send('service_wrnh7j6', 'template_o4ow1ns', templateParams)
+                    .then(function() {
+                        // Sucesso
+                        btnText.textContent = '✅ Enviado com sucesso!';
+                        btnSubmit.classList.remove('bg-pw-brand');
+                        btnSubmit.classList.add('bg-green-600', 'text-white');
+                        feedback.textContent = 'Recebemos seus dados! Em breve entraremos em contato.';
+                        feedback.classList.remove('hidden', 'text-red-400');
+                        feedback.classList.add('text-pw-brand');
+                        form.reset();
+
+                        // Restaura o botão após 5 segundos
+                        setTimeout(function() {
+                            btnText.textContent = 'Solicitar Análise Gratuita';
+                            btnIcon.style.display = '';
+                            btnSubmit.disabled = false;
+                            btnSubmit.classList.remove('opacity-70', 'cursor-not-allowed', 'bg-green-600', 'text-white');
+                            btnSubmit.classList.add('bg-pw-brand');
+                            feedback.classList.add('hidden');
+                        }, 5000);
+                    })
+                    .catch(function(error) {
+                        // Erro
+                        console.error('EmailJS Error:', error);
+                        btnText.textContent = 'Erro ao enviar. Tente novamente.';
+                        btnSubmit.classList.remove('bg-pw-brand');
+                        btnSubmit.classList.add('bg-red-600', 'text-white');
+                        feedback.textContent = 'Ocorreu um erro. Tente novamente ou entre em contato pelo WhatsApp.';
+                        feedback.classList.remove('hidden', 'text-pw-brand');
+                        feedback.classList.add('text-red-400');
+
+                        // Restaura o botão após 4 segundos
+                        setTimeout(function() {
+                            btnText.textContent = 'Solicitar Análise Gratuita';
+                            btnIcon.style.display = '';
+                            btnSubmit.disabled = false;
+                            btnSubmit.classList.remove('opacity-70', 'cursor-not-allowed', 'bg-red-600', 'text-white');
+                            btnSubmit.classList.add('bg-pw-brand');
+                        }, 4000);
+                    });
+            });
+        })();
     </script>
 
     <!-- Floating WhatsApp Button (Sem Animação de Pulso) -->
